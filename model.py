@@ -72,14 +72,19 @@ class ConvNetworkSameChannel(nn.Module):
         super().__init__()
         self.convStack = nn.Sequential(
             nn.Conv2d(3, 48, 3, 2, 1),
+            nn.BatchNorm2d(48),
             nn.ReLU(),
             nn.Conv2d(48, 48, 3, 2, 1),
+            nn.BatchNorm2d(48),
             nn.ReLU(),
             nn.Conv2d(48, 48, 3, 2, 1),
+            nn.BatchNorm2d(48),
             nn.ReLU(),
             nn.Conv2d(48, 48, 3, 2, 1),
+            nn.BatchNorm2d(48),
             nn.ReLU(),
             nn.Conv2d(48, 48, 3, 2, 1),
+            nn.BatchNorm2d(48),
             nn.ReLU(),
            
             nn.ConvTranspose2d(48, 48, 3, padding=1,
