@@ -44,7 +44,7 @@ class CustomImageDataset(Dataset):
         else:
             return torch.tensor(image, dtype=torch.float32), torch.tensor(label, dtype=torch.float32)
 
-outputPath="ConvNetworkSameChannel"
+outputPath="NeuralNetworkWithSwinT"
 trainDataset = CustomImageDataset("train/", "labels.txt")
 testDataset = CustomImageDataset("test/", "labels.txt")
 
@@ -66,45 +66,6 @@ def normalize(x):
     : return: Numpy array of normalized data
     """
     return np.array((x - np.min(x)) / (np.max(x) - np.min(x)))
-
-class ConvNetworkSameChannel(nn.Module):
-    def __init__(self):
-        super().__init__()
-        self.convStack = nn.Sequential(
-            nn.Conv2d(3, 48, 3, 2, 1),
-            nn.BatchNorm2d(48),
-            nn.ReLU(),
-            nn.Conv2d(48, 48, 3, 2, 1),
-            nn.BatchNorm2d(48),
-            nn.ReLU(),
-            nn.Conv2d(48, 48, 3, 2, 1),
-            nn.BatchNorm2d(48),
-            nn.ReLU(),
-            nn.Conv2d(48, 48, 3, 2, 1),
-            nn.BatchNorm2d(48),
-            nn.ReLU(),
-            nn.Conv2d(48, 48, 3, 2, 1),
-            nn.BatchNorm2d(48),
-            nn.ReLU(),
-           
-            nn.ConvTranspose2d(48, 48, 3, padding=1,
-                               output_padding=1, stride=2),
-            nn.ReLU(),
-            nn.ConvTranspose2d(48, 24, 3, padding=1,
-                               output_padding=1, stride=2),
-            nn.ReLU(),
-            nn.ConvTranspose2d(24, 12, 3, padding=1,
-                               output_padding=1, stride=2),
-            nn.ReLU(),
-            nn.ConvTranspose2d(12, 6, 3, padding=1,
-                               output_padding=1, stride=2),
-            nn.ReLU(),
-            nn.ConvTranspose2d(6, 3, 3, padding=1, output_padding=1, stride=2),
-        )
-
-    def forward(self, x):
-        input = self.convStack(x)
-        return input
 
 class ConvNetwork(nn.Module):
     def __init__(self):
@@ -140,53 +101,6 @@ class ConvNetwork(nn.Module):
         input = self.convStack(x)
         return input
     
-class ConvNetworkMPool(nn.Module):
-    def __init__(self):
-        super().__init__()
-        self.convStack = nn.Sequential(
-            nn.Conv2d(3, 6, 3, 1, 'same'),
-            nn.MaxPool2d(3, 2,1),
-            nn.ReLU(),
-            nn.Conv2d(6, 12, 3, 1, 'same'),
-            nn.MaxPool2d(3,2,1),
-            nn.ReLU(),
-            nn.Conv2d(12, 24, 3, 1, 'same'),
-            nn.MaxPool2d(3,2,1),
-            nn.ReLU(),
-            nn.Conv2d(24, 48, 3, 1, 'same'),
-            nn.MaxPool2d(3,2,1),
-            nn.ReLU(),
-            nn.Conv2d(48, 48, 3, 1, 'same'),
-            nn.MaxPool2d(3,2,1),
-            nn.ReLU(),
-            nn.Conv2d(48, 48, 3, 1, 'same'),
-            nn.MaxPool2d(3,2,1),
-            nn.ReLU(),
-           
-            nn.ConvTranspose2d(48, 48, 3, padding=1,
-                               output_padding=1, stride=2),
-            nn.ReLU(),
-           
-            nn.ConvTranspose2d(48, 48, 3, padding=1,
-                               output_padding=1, stride=2),
-            nn.ReLU(),
-            nn.ConvTranspose2d(48, 24, 3, padding=1,
-                               output_padding=1, stride=2),
-            nn.ReLU(),
-            nn.ConvTranspose2d(24, 12, 3, padding=1,
-                               output_padding=1, stride=2),
-            nn.ReLU(),
-            nn.ConvTranspose2d(12, 6, 3, padding=1,
-                               output_padding=1, stride=2),
-            nn.ReLU(),
-            nn.ConvTranspose2d(6, 3, 3, padding=1, output_padding=1, stride=2),
-        )
-
-    def forward(self, x):
-        input = self.convStack(x)
-        return input
-
-
 class NeuralNetworkWithSwinT(nn.Module):
     def __init__(self):
         super().__init__()
@@ -258,10 +172,9 @@ class NeuralNetworkWithSwinT2(nn.Module):
 
 
 #model=ConvNetwork()
-#model=NeuralNetworkWithSwinT()
+model=NeuralNetworkWithSwinT()
 #model = NeuralNetworkWithSwinT2()
-#model = ConvNetworkMPool()
-model=ConvNetworkSameChannel()
+
 
 if device == "cuda":
     model = model.cuda()
@@ -290,9 +203,9 @@ def trainLoop(dataloader, model, loss_fn, optimizer):
             x_base = normalize(x[0].permute(1, 2, 0).contiguous().cpu().detach().numpy())
             y_pred = normalize(pred[0].permute(1, 2, 0).contiguous().cpu().detach().numpy())
             y_gt = normalize(y[0].permute(1, 2, 0).contiguous().cpu().detach().numpy())
-          
+            border=np.ones([1,128,3])
             plt.imsave(outputPath +"/"+
-                       str(i)+"_result.png", np.concatenate((y_pred,y_gt,x_base),0))
+                       str(i)+"_result.png", np.concatenate((y_pred,border,y_gt,border,x_base),0))
 
             i += 1
 

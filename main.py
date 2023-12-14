@@ -8,7 +8,7 @@ import random as r
 size=128
 for i in range(500):
     #circleNum=r.randint(1,3)
-    circleNum=4
+    circleNum=1
     print(i)
     xImg = np.zeros((128, 128, 3), np.uint8)
     yImg = np.zeros((128, 128, 3), np.uint8)
@@ -21,8 +21,11 @@ for i in range(500):
         radius = 5
         # Draw a diagonal blue line with thickness of 5 px
         #cv.rectangle(img, (upX, upY), (bottomX, bottomY), (0, 255, 0), 3)
+
         cv.circle(xImg, (xX, xY), radius, (255, 0, 0), -1)
         cv.circle(yImg, (yX, yY), radius, (255, 0, 0), -1)
+
+
 
     plt.imsave("test/"+str(i)+"_groundTruth.png", xImg)
     plt.imsave("test/"+str(i)+"_noised.png", yImg)
