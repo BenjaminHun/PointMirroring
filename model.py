@@ -44,7 +44,7 @@ class CustomImageDataset(Dataset):
         else:
             return torch.tensor(image, dtype=torch.float32), torch.tensor(label, dtype=torch.float32)
 
-outputPath="NeuralNetworkWithSwinT"
+outputPath="NeuralNetworkWithSwinT2"
 trainDataset = CustomImageDataset("train/", "labels.txt")
 testDataset = CustomImageDataset("test/", "labels.txt")
 
@@ -172,8 +172,8 @@ class NeuralNetworkWithSwinT2(nn.Module):
 
 
 #model=ConvNetwork()
-model=NeuralNetworkWithSwinT()
-#model = NeuralNetworkWithSwinT2()
+#model=NeuralNetworkWithSwinT()
+model = NeuralNetworkWithSwinT2()
 
 
 if device == "cuda":
