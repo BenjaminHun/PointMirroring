@@ -44,21 +44,6 @@ class CustomImageDataset(Dataset):
         else:
             return torch.tensor(image, dtype=torch.float32), torch.tensor(label, dtype=torch.float32)
 
-outputPath="NeuralNetworkWithSwinT2"
-trainDataset = CustomImageDataset("train/", "labels.txt")
-testDataset = CustomImageDataset("test/", "labels.txt")
-
-trainDataloader = DataLoader(trainDataset, batch_size=10, shuffle=True)
-testDataloader = DataLoader(testDataset, batch_size=10, shuffle=True)
-
-trainFeatures, trainLabels = next(iter(trainDataloader))
-
-print(f"Feature batch shape: {trainFeatures.size()}")
-print(f"Labels batch shape: {trainLabels.size()}")
-
-print(f"Using {device} device")
-
-
 def normalize(x):
     """
     Normalize a list of sample image data in the range of 0 to 1
@@ -105,7 +90,7 @@ class NeuralNetworkWithSwinT(nn.Module):
     def __init__(self):
         super().__init__()
         self.swinT = sw.SwinTransformer(img_size=(
-            128, 128), patch_size=4, window_size=4, in_chans=3, depths=[16], embed_dim=96, drop_rate=0.3)
+            128, 128), patch_size=4, window_size=4, in_chans=3, depths=[12], embed_dim=96, drop_rate=0.3)
         self.convStack = nn.Sequential(
             nn.ConvTranspose2d(96, 48, 3, padding=1,
                                output_padding=1, stride=2),
@@ -171,21 +156,6 @@ class NeuralNetworkWithSwinT2(nn.Module):
         return x
 
 
-#model=ConvNetwork()
-#model=NeuralNetworkWithSwinT()
-model = NeuralNetworkWithSwinT2()
-
-
-if device == "cuda":
-    model = model.cuda()
-
-learningRate = 1e-3
-batchSize = 10
-epochs = 300
-loss = nn.MSELoss()
-optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
-
-
 def trainLoop(dataloader, model, loss_fn, optimizer):
     size = len(dataloader.dataset)
     model.train()
@@ -233,6 +203,32 @@ def testLoop(dataloader, model, loss_fn):
     with open(outputPath +"/"+"results.txt","a",encoding="utf-8") as f:
         f.write(f"Test error: \n Avg loss:{test_loss:>8f}\n")
 
+outputPath="NeuralNetworkWithSwinT"
+trainDataset = CustomImageDataset("train/", "labels.txt")
+testDataset = CustomImageDataset("test/", "labels.txt")
+
+trainDataloader = DataLoader(trainDataset, batch_size=10, shuffle=True)
+testDataloader = DataLoader(testDataset, batch_size=10, shuffle=True)
+
+trainFeatures, trainLabels = next(iter(trainDataloader))
+
+print(f"Feature batch shape: {trainFeatures.size()}")
+print(f"Labels batch shape: {trainLabels.size()}")
+
+print(f"Using {device} device")
+#model=ConvNetwork()
+#model=NeuralNetworkWithSwinT()
+model = NeuralNetworkWithSwinT()
+
+
+if device == "cuda":
+    model = model.cuda()
+
+learningRate = 1e-3
+batchSize = 10
+epochs = 300
+loss = nn.MSELoss()
+optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 
 for t in range(epochs):
     with open(outputPath +"/"+"results.txt","a",encoding="utf-8") as f:
