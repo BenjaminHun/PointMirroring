@@ -228,7 +228,7 @@ learningRate = 1e-3
 batchSize = 10
 epochs = 300
 loss = nn.MSELoss()
-optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+optimizer = torch.optim.Adam(model.parameters(), lr=0.005)
 
 for t in range(epochs):
     with open(outputPath +"/"+"results.txt","a",encoding="utf-8") as f:
