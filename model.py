@@ -114,8 +114,8 @@ print(f"Labels batch shape: {trainLabels.size()}")
 
 print(f"Using {device} device")
 #model=n.ConvNetwork()
-#model=n.NeuralNetworkWithSwinT()
-model = n.NeuralNetworkWithSwinT()
+model=n.NeuralNetworkWithSwinT2()
+#model = n.NeuralNetworkWithSwinT()
 
 
 if device == "cuda":
@@ -131,5 +131,5 @@ for t in range(epochs):
     with open(outputPath +"/"+"results.txt","a",encoding="utf-8") as f:
         f.write(f"Epoch {t+1}\n------------------\n")
     trainLoop(trainDataloader, model, loss, optimizer)
-    if t % 10:
+    if t % 10 == 0:
         testLoop(testDataloader, model, loss)

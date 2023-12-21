@@ -7,9 +7,9 @@ class NeuralNetworkWithSwinT2(nn.Module):
     def __init__(self):
         super().__init__()
         self.swinT = sw.SwinTransformer(img_size=(
-            128, 128), patch_size=4, window_size=4, in_chans=3, depths=[8], embed_dim=96, drop_rate=0.3)
+            128, 128), patch_size=4, window_size=4, in_chans=3, depths=[12], embed_dim=96, drop_rate=0.3)
         self.swinT2 = sw.SwinTransformer(img_size=(
-            32, 32), patch_size=4, window_size=4, in_chans=96, depths=[8], embed_dim=96, drop_rate=0.3)
+            32, 32), patch_size=4, window_size=4, in_chans=96, depths=[12], embed_dim=96, drop_rate=0.3)
 
         self.convStack = nn.Sequential(
             nn.ConvTranspose2d(96, 48, 3, padding=1,
