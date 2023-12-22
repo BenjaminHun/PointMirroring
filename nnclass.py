@@ -7,14 +7,11 @@ class NeuralNetworkWithSwinT2(nn.Module):
     def __init__(self):
         super().__init__()
         self.swinT = sw.SwinTransformer(img_size=(
-            128, 128), patch_size=4, window_size=4, in_chans=3, depths=[12], embed_dim=96, drop_rate=0.3)
+            128, 128), patch_size=4, window_size=4, in_chans=3, depths=[12], embed_dim=48, drop_rate=0.3)
         self.swinT2 = sw.SwinTransformer(img_size=(
-            32, 32), patch_size=4, window_size=4, in_chans=96, depths=[12], embed_dim=192, drop_rate=0.3)
+            32, 32), patch_size=4, window_size=4, in_chans=48, depths=[12], embed_dim=96, drop_rate=0.3)
 
         self.convStack = nn.Sequential(
-            nn.ConvTranspose2d(192, 96, 3, padding=1,
-                               output_padding=1, stride=2),
-            nn.ReLU(),
             nn.ConvTranspose2d(96, 48, 3, padding=1,
                                output_padding=1, stride=2),
             nn.ReLU(),
@@ -24,7 +21,9 @@ class NeuralNetworkWithSwinT2(nn.Module):
             nn.ConvTranspose2d(24, 12, 3, padding=1,
                                output_padding=1, stride=2),
             nn.ReLU(),
-            nn.Conv2d(12, 3, 3, 1, 1)
+            nn.ConvTranspose2d(12, 3, 3, padding=1,
+                               output_padding=1, stride=2),
+
         )
 
     def forward(self, x):
