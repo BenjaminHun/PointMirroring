@@ -117,7 +117,7 @@ class swinT3(nn.Module):
         self.swinT2 = sw.SwinTransformer(img_size=(
             32, 32), patch_size=4, window_size=4, in_chans=12, depths=[12], embed_dim=24, drop_rate=0.3)
         self.swinT3 = sw.SwinTransformer(img_size=(
-            8, 8), patch_size=4, window_size=4, in_chans=12, depths=[12], embed_dim=48, drop_rate=0.3)
+            8, 8), patch_size=4, window_size=4, in_chans=24, depths=[12], embed_dim=48, drop_rate=0.3)
 
         self.convStack = nn.Sequential(
             nn.ConvTranspose2d(48, 36, 3, padding=1,
@@ -151,6 +151,13 @@ class swinT3(nn.Module):
         x = self.swinT2(x)
         H = 32
         W = 32
+        B, HW, C = x.shape
+        newH = int((H/(m.pow((H*W)/HW, 0.5))))
+        newW = int((W/(m.pow((H*W)/HW, 0.5))))
+        x = x.view(B, C, newH, newW)
+        x = self.swinT3(x)
+        H = 8
+        W = 8
         B, HW, C = x.shape
         newH = int((H/(m.pow((H*W)/HW, 0.5))))
         newW = int((W/(m.pow((H*W)/HW, 0.5))))

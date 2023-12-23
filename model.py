@@ -114,8 +114,9 @@ print(f"Labels batch shape: {trainLabels.size()}")
 
 print(f"Using {device} device")
 #model=n.ConvNetwork()
-model=n.NeuralNetworkWithSwinT2()
+#model=n.NeuralNetworkWithSwinT2()
 #model = n.NeuralNetworkWithSwinT()
+model = n.swinT3()
 
 
 if device == "cuda":
