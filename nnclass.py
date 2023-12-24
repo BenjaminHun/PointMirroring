@@ -117,7 +117,7 @@ class swinT3(nn.Module):
         self.swinT2 = sw.SwinTransformer(img_size=(
             32, 32), patch_size=4, window_size=4, in_chans=12, depths=[12], embed_dim=24, drop_rate=0.3)
         self.swinT3 = sw.SwinTransformer(img_size=(
-            8, 8), patch_size=4, window_size=4, in_chans=24, depths=[12], embed_dim=48, drop_rate=0.3)
+            8, 8), patch_size=4, window_size=4, in_chans=24, depths=[6], embed_dim=48, drop_rate=0.0)
 
         self.convStack = nn.Sequential(
             nn.ConvTranspose2d(48, 36, 3, padding=1,
